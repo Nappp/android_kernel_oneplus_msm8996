@@ -1,0 +1,52 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the blu_spark-oreo-ci branch
+  push:
+    branches: [ ci ]
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+    
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+    
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+        
+      - uses: actions/checkout@v3
+        with:
+          ref: 'QC8996_P_9.0'
+      
+      #- name: apt-install
+      #  run: sudo apt update && sudo apt install -y gcc g++ python make texinfo texlive bc bison build-essential ccache curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses5-dev lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev unzip
+
+      - name: Download gcc
+        run: git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b android-8.0.0_r51 --depth=1 $HOME/gcc
+      - name: Download AnyKernel
+        run: |
+          git clone https://github.com/Nappp/AnyKernel3-OP3T.git  --depth=1 $HOME/AnyKernel
+          rm -rf $HOME/AnyKernel/.git
+      - name: make
+        run: |
+          cd $GITHUB_WORKSPACE
+          ls -lrt $HOME/gcc/bin
+          printenv
+          sudo make ARCH=arm64 O=$HOME/out CROSS_COMPILE=aarch64-linux-android- msm_defconfig
+          sudo PATH=$PATH:$HOME/gcc/bin make ARCH=arm64 O=$HOME/out CROSS_COMPILE=aarch64-linux-android- -j$(nproc --all)  
+        
+      - name: Inspect
+        run: ls -lrt  $HOME/out/arch/arm64/boot
+        
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifact.zip
+          path:  /home/runner/out/arch/arm64/boot
+          if-no-files-found: error
