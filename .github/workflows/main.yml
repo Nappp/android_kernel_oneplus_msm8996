@@ -38,7 +38,7 @@ jobs:
           cd $GITHUB_WORKSPACE
           ls -lrt $HOME/gcc/bin
           printenv
-          sudo make ARCH=arm64 O=$HOME/out CROSS_COMPILE=aarch64-linux-android- msm_defconfig
+          sudo make ARCH=arm64 O=$HOME/out CROSS_COMPILE=aarch64-linux-android- msm-perf_defconfig
           sudo PATH=$PATH:$HOME/gcc/bin make ARCH=arm64 O=$HOME/out CROSS_COMPILE=aarch64-linux-android- -j$(nproc --all)  
         
       - name: Inspect
