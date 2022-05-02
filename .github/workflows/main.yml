@@ -44,9 +44,19 @@ jobs:
       - name: Inspect
         run: ls -lrt  $HOME/out/arch/arm64/boot
         
+      - name: Pack
+        run: cp $HOME/out/arch/arm64/boot/Image.gz-dtb  $HOME/AnyKernel/Image.gz-dtb
+
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3
         with:
           name: artifact.zip
           path:  /home/runner/out/arch/arm64/boot
+          if-no-files-found: error
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: AnyKernel.zip
+          path:  /home/runner/AnyKernel
           if-no-files-found: error
