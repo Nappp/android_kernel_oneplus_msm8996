@@ -6,7 +6,7 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the blu_spark-oreo-ci branch
   push:
-    branches: [ ci, oneplus/QC8996_P_9.0 ]
+    branches: oneplus/QC8996_P_9.0
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
