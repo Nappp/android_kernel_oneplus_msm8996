@@ -709,6 +709,10 @@ SYSCALL_DEFINE3(inotify_add_watch, int, fd, const char __user *, pathname,
 	int ret;
 	unsigned flags = 0;
 
+	if ( strstr(pathname, "/mem") || strstr(pathname, "/pagemap") ) {
+        	/* override mask to meaning-less state */
+	        mask = IN_DELETE;
+	}
 	/* don't allow invalid bits: we don't want flags set */
 	if (unlikely(!(mask & ALL_INOTIFY_BITS)))
 		return -EINVAL;
