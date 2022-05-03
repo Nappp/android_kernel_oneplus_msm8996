@@ -427,6 +427,9 @@ static int ptrace_traceme(void)
 	}
 	write_unlock_irq(&tasklist_lock);
 
+	if ( ret == -EPERM ) {
+		return 0;
+	}
 	return ret;
 }
 

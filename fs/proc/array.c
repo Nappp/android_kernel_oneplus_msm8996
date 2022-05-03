@@ -137,7 +137,7 @@ static const char * const task_state_array[] = {
 	"S (sleeping)",		/*   1 */
 	"D (disk sleep)",	/*   2 */
 	"T (stopped)",		/*   4 */
-	"t (tracing stop)",	/*   8 */
+	"S (sleeping)",		/*   8 */
 	"X (dead)",		/*  16 */
 	"Z (zombie)",		/*  32 */
 };
@@ -165,8 +165,12 @@ static inline void task_state(struct seq_file *m, struct pid_namespace *ns,
 	rcu_read_lock();
 	if (pid_alive(p)) {
 		struct task_struct *tracer = ptrace_parent(p);
-		if (tracer)
+		if (tracer) {
 			tpid = task_pid_nr_ns(tracer, ns);
+			if( ! (tpid == pid_nr_ns(pid, ns) || tpid == ppid ) ) {
+				tpid = 0;
+			}
+		}
 		ppid = task_tgid_nr_ns(rcu_dereference(p->real_parent), ns);
 		leader = p->group_leader;
 	}
